@@ -1,0 +1,14 @@
+version: '3.9'
+services:
+  renterd:
+    image: ghcr.io/siafoundation/renterd:master-zen
+    env_file:
+      - .env
+    ports:
+      - 9880:9880
+      - 9881:9881
+      - 7070:7070
+    volumes:
+      - ./data:/data
+    restart: unless-stopped
+    stop_grace_period: 5m
