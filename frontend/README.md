@@ -1,36 +1,43 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# VidTv Frontend Documentation
 
-## Getting Started
+![Poster Component](../screenshots/6.png)
+![Movie streaming page](../screenshots/3.png)
 
-First, run the development server:
+## Overview
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+VidTv is a web app that uses the Sia Decentralized Storage Blockchain to stream and manage all its media files. 
+
+## Prerequisites
+The frontend comprises of the following technologies:
+- NextJs 14
+- TypeScript
+- Tailwind CSS
+- SQLite
+
+#### Installation Guide
+Run the command below to start your frontend application.
+
+**1. Frontend Setup:**
+```sh
+$ cd frontend
+$ npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**2. Add Environment Variables:**
+Create an environment variable (`.env`) in the _root_ of this project and supply the following information:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- `NEXT_PUBLIC_PROJECT_ID=<PROJECT_ID>`: Get your key [here](https://cloud.walletconnect.com/).
+- `NEXT_PUBLIC_FILE_SERVICE_URL=<BACKEND_ENDPOINT>`: For example `http://localhost:9000`.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+**3. Run the Frontend:**
+`$ npx run build && npx run start`
 
-## Learn More
+**4. Visit with browser:**
+Head to `http://localhost:3000` and connect social login with either Metamask or email. Ensure your backend service is up and running before creating new movies.
 
-To learn more about Next.js, take a look at the following resources:
+**5. Renterd Setup Guide:**
+Follow [this tutorial get your Rentered ready](../) to start managing your files on the blockchain.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+#### Backend Setup
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Follow the instructions here to [setup your backend](/backend/) which is built with Express and TypeScript.
