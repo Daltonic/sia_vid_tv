@@ -1,23 +1,31 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { useAccount } from 'wagmi'
-import { AiOutlineClose } from 'react-icons/ai'
-import { LuPlus } from 'react-icons/lu'
 import { fetchMovie, updateMovie } from '@/app/services/api.service'
 import { toast } from 'react-toastify'
 import { useParams } from 'next/navigation'
 import { PosterInterface } from '@/utils/interfaces'
 import Link from 'next/link'
+import Uploader from '@/app/components/shared/Uploader'
+import Uploaded from '@/app/components/shared/Uploaded'
+
+interface FilesState {
+  image: string | File
+  video: string | File
+}
 
 export default function Page() {
   const { slug } = useParams()
   const { address, isConnecting, isDisconnected } = useAccount()
   const [movie, setMovie] = useState<PosterInterface | null>(null)
-  const [videos, setVideos] = useState<File[]>([])
+  const [files, setFiles] = useState<FilesState>({
+    image: '',
+    video: '',
+  })
   const [movieDetails, setMovieDetails] = useState({
     name: '',
     image: '',
-    videoUrl: 'https://pixeldrain.com/api/file/kZRgPKJb',
+    videoUrl: '',
     background: '',
     genre: '',
     duration: '',
@@ -31,14 +39,42 @@ export default function Page() {
       const movieData = await fetchMovie(slug as string)
       setMovieDetails(movieData as any)
       setMovie(movieData)
-      console.log(address)
+      handleSelectedFile('image', movieData.image as string)
+      handleSelectedFile('videoUrl', movieData.videoUrl as string)
     }
 
     fetchMovieData()
   }, [slug, address, isDisconnected])
 
+  const handleSelectedFile = (name: string, value: string) => {
+    setFiles((prevDetails) => ({
+      ...prevDetails,
+      [name]: value,
+    }))
+  }
+
+  const isAllFieldsFilled = () =>
+    Object.values(movieDetails).every((value) => value !== '')
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target
+    setMovieDetails((prevDetails) => ({
+      ...prevDetails,
+      [name]: value,
+    }))
+  }
+
+  const handleURLMount = (name: string, value: string) => {
+    setMovieDetails((prevDetails) => ({
+      ...prevDetails,
+      [name]: value,
+    }))
+  }
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+
+    if (!isAllFieldsFilled()) return toast.warning('Some fields are empty')
 
     await toast.promise(
       new Promise<void>(async (resolve, reject) => {
@@ -56,91 +92,6 @@ export default function Page() {
     )
   }
 
-  const onUpload = () => {
-    if (!movieDetails.name || !movieDetails.background || !movieDetails.genre)
-      return alert('Empty filed detected!')
-    console.log({ video: videos[0], ...movieDetails })
-  }
-
-  const handleRemoveVideo = () => {
-    setVideos([])
-  }
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target
-    setMovieDetails((prevDetails) => ({
-      ...prevDetails,
-      [name]: value,
-    }))
-  }
-
-  const handleDragOver = (event: React.DragEvent) => {
-    event.preventDefault()
-  }
-
-  const handleDrop = (event: React.DragEvent) => {
-    event.preventDefault()
-    const file = event.dataTransfer.files[0]
-
-    // Check file size
-    if (file.size > 100 * 1024 * 1024) {
-      // 150 MB in bytes
-      alert('File size must be less than 100MB.')
-      return
-    }
-
-    // Check file type
-    if (!file.type.startsWith('video/mp4')) {
-      alert('Only MP4 files are allowed.')
-      return
-    }
-
-    setVideos([file])
-  }
-
-  const handleClickOpenFileExplorer = () => {
-    // Create a hidden file input element
-    const fileInput = document.createElement('input')
-    fileInput.type = 'file'
-    fileInput.accept = '.mp4' // Limit file types to MP4
-    fileInput.style.display = 'none' // Hide the file input
-
-    const handleFileSelection = (event: Event) => {
-      // Use event.currentTarget to access the input element
-      const target = event.currentTarget as HTMLInputElement
-      const file = target.files?.[0] // Now safely accessing the files property
-
-      if (!file) return
-
-      // Check file size
-      if (file.size > 100 * 1024 * 1024) {
-        // 150 MB in bytes
-        alert('File size must be less than 100MB.')
-        return
-      }
-
-      // Check file type
-      if (!file.type.startsWith('video/mp4')) {
-        alert('Only MP4 files are allowed.')
-        return
-      }
-
-      setVideos([file])
-    }
-
-    // Attach the modified event listener
-    fileInput.onchange = handleFileSelection
-
-    // Append the file input to the body temporarily
-    document.body.appendChild(fileInput)
-    fileInput.click() // Open the file dialog
-
-    // Remove the file input after the dialog is closed
-    fileInput.addEventListener('change', () => {
-      document.body.removeChild(fileInput)
-    })
-  }
-
   return (
     <div className="flex flex-col items-center">
       <Link href={'/movies/' + movie?.slug} className="mb-4 text-green-500">
@@ -149,53 +100,42 @@ export default function Page() {
       <div className="bg-gray-800 bg-opacity-75 border border-slate-500 w-full md:w-2/5 p-4 rounded-xl text-slate-200">
         <div className="flex flex-col items-center justify-center gap-2">
           <div className="flex justify-between items-center space-x-2 w-full">
-            {videos.length < 1 && (
-              <div
-                className="flex flex-col items-center border-dashed border-2
-            border-slate-500 w-full h-32 justify-center rounded-xl
-            cursor-pointer hover:border-green-500"
-                onDragOver={handleDragOver}
-                onDrop={handleDrop}
-                onClick={handleClickOpenFileExplorer}
-              >
-                <LuPlus className="text-3xl" />
-                <p>Upload Video</p>
-                <p className="text-sm text-slate-400">100mb Max</p>
-              </div>
+            {!movieDetails.videoUrl ? (
+              <Uploader
+                name="Video"
+                type="video/mp4"
+                size={100}
+                onUploadSuccess={(response) =>
+                  handleURLMount('videoUrl', response.url)
+                }
+                onFileSelected={(file) => handleSelectedFile('video', file)}
+              />
+            ) : (
+              <Uploaded
+                name="Video"
+                file={files.video}
+                onRemove={() => handleURLMount('videoUrl', '')}
+              />
             )}
-            {videos.length < 1 && (
-              <div
-                className="flex flex-col items-center border-dashed border-2
-            border-slate-500 w-full h-32 justify-center rounded-xl
-            cursor-pointer hover:border-green-500"
-                onDragOver={handleDragOver}
-                onDrop={handleDrop}
-                onClick={handleClickOpenFileExplorer}
-              >
-                <LuPlus className="text-3xl" />
-                <p>Upload Photo</p>
-                <p className="text-sm text-slate-400">2mb Max</p>
-              </div>
+
+            {!movieDetails.image ? (
+              <Uploader
+                name="Poster"
+                type="image/png, image/jpg, image/jpeg"
+                size={2}
+                onUploadSuccess={(response) =>
+                  handleURLMount('image', response.url)
+                }
+                onFileSelected={(file) => handleSelectedFile('image', file)}
+              />
+            ) : (
+              <Uploaded
+                name="Poster"
+                file={files.image}
+                onRemove={() => handleURLMount('image', '')}
+              />
             )}
           </div>
-
-          {videos.length > 0 && (
-            <div className="w-full flex flex-col justify-center">
-              <div className="relative w-full h-40 border border-slate-400 rounded-lg overflow-hidden">
-                <video
-                  className="w-full h-full object-cover"
-                  src={URL.createObjectURL(videos[0])}
-                  controls
-                />
-                <button
-                  className="absolute top-1 right-1 text-white bg-red-600 rounded-full p-1"
-                  onClick={handleRemoveVideo}
-                >
-                  <AiOutlineClose />
-                </button>
-              </div>
-            </div>
-          )}
 
           <form onSubmit={handleSubmit} className="w-full mt-4">
             <div className="mb-4">
@@ -309,7 +249,7 @@ export default function Page() {
               </small>
             </div>
 
-            {movie && movie.userId === address && (
+            {movie && movie.userId === address && !isDisconnected && (
               <button
                 className="w-full bg-green-500 text-white py-2.5 rounded-lg hover:bg-transparent
               hover:border-green-800 border border-transparent hover:text-green-500"

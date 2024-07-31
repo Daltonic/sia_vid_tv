@@ -1,6 +1,6 @@
 require('dotenv').config()
 import { FileUpload } from '../utils/interfaces'
-import axios, { AxiosResponse } from 'axios'
+import axios, { AxiosProgressEvent, AxiosResponse } from 'axios'
 import fs from 'fs'
 import path from 'path'
 import { Readable, pipeline } from 'stream'
@@ -72,9 +72,14 @@ class SiaService {
         Authorization: `Basic ${Buffer.from(`:${this.siaPassword}`).toString(
           'base64'
         )}`,
-        'Content-Type': file.mimetype, // Set the correct MIME type for the file
+        'Content-Type': file.mimetype,
       },
-      data: file.data, // Pass the stream as the data
+      data: file.data,
+      onUploadProgress: (progressEvent: AxiosProgressEvent) => {
+        const { loaded, total } = progressEvent
+        const percentCompleted = Math.round((loaded / Number(total)) * 100)
+        console.log(`Upload progress: ${percentCompleted}%`)
+      },
     }
 
     try {

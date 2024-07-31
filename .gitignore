@@ -11,7 +11,7 @@
 
 # next.js
 **/.next/
-**/cache
+**/cache/*
 /data/
 /out/
 

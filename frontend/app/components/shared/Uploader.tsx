@@ -11,6 +11,7 @@ interface ComponentProps {
   type: string // Ensure this accepts any valid MIME type string
   size: number
   onUploadSuccess: (response: any) => void
+  onFileSelected: (file: any) => void
 }
 
 const Uploader: React.FC<ComponentProps> = ({
@@ -18,6 +19,7 @@ const Uploader: React.FC<ComponentProps> = ({
   size,
   name,
   onUploadSuccess,
+  onFileSelected,
 }) => {
   const [uploading, setUploading] = useState<boolean>(false)
   const [progress, setProgress] = useState(0)
@@ -46,8 +48,6 @@ const Uploader: React.FC<ComponentProps> = ({
     event.preventDefault()
     const file = event.dataTransfer.files[0]
 
-    console.log(file)
-
     // Check file size
     if (file.size > size * 1024 * 1024) {
       alert(`File size must be less than ${size}MB.`)
@@ -62,6 +62,8 @@ const Uploader: React.FC<ComponentProps> = ({
       alert(`Only ${type} files are allowed.`)
       return
     }
+
+    onFileSelected(file)
 
     setFiles([file])
   }
@@ -101,6 +103,8 @@ const Uploader: React.FC<ComponentProps> = ({
         alert(`Only ${type} files are allowed.`)
         return
       }
+
+      onFileSelected(file)
 
       setFiles([file])
     }
@@ -159,48 +163,54 @@ const Uploader: React.FC<ComponentProps> = ({
 
       {files.length > 0 && (
         <div className="flex flex-col justify-center shadow-md w-full h-32 rounded-lg overflow-hidden">
-          <div className="relative w-full h-full ">
+          <div className="relative w-full h-full">
             <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-75"></div>
-            {type.includes('video') ? (
-              <video
-                className="w-full h-full object-cover"
-                src={URL.createObjectURL(files[0])}
-              />
-            ) : (
-              <img
-                className="w-full h-full object-cover"
-                src={URL.createObjectURL(files[0])}
-                alt="photo"
-              />
-            )}
 
-            {uploading ? (
-              <>
-                <div className="absolute top-12 left-24 bg-white text-green-600 rounded-full p-1 py-1.5">
-                  <span className="text-sm h-6 w-6">{progress}%</span>
-                </div>
-                <div className="absolute bottom-0 left-0 right-0 bg-gray-700 rounded-full h-[2px]">
-                  <span
-                    className={`bg-green-500 h-full w-[${progress}%] flex`}
-                  ></span>
-                </div>
-              </>
-            ) : (
-              <>
-                <button
-                  className="absolute top-1 right-1 text-white bg-red-600 rounded-full p-1"
-                  onClick={removeFile}
-                >
-                  <AiOutlineClose />
-                </button>
-                <button
-                  onClick={handleUpload}
-                  className="absolute top-12 left-24 bg-white text-green-600 rounded-full p-1"
-                >
-                  <FaCloudUploadAlt size={30} />
-                </button>
-              </>
-            )}
+            <div className="relative h-full">
+              {type.includes('video') ? (
+                <video
+                  className="w-full h-full object-cover"
+                  src={URL.createObjectURL(files[0])}
+                />
+              ) : (
+                <img
+                  className="w-full h-full object-cover"
+                  src={URL.createObjectURL(files[0])}
+                  alt="photo"
+                />
+              )}
+
+              {uploading ? (
+                <>
+                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white text-green-600 rounded-full p-1 py-1.5">
+                    <span className="text-sm h-6 w-6">{progress}%</span>
+                  </div>
+                  <div className="absolute bottom-0 left-0 right-0 bg-gray-700 rounded-full h-[2px]">
+                    <span
+                      className={`bg-green-500 h-full w-[${progress}%] flex`}
+                    ></span>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <button
+                    onClick={handleUpload}
+                    className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2
+                    bg-white text-green-600 rounded-full p-1.5 py-1.5 
+                    hover:bg-black hover:bg-opacity-70"
+                  >
+                    <FaCloudUploadAlt size={30} />
+                  </button>
+                  <button
+                    className="absolute top-1 right-1 text-white bg-black bg-opacity-70
+                  hover:text-red-500 rounded-full p-1"
+                    onClick={removeFile}
+                  >
+                    <AiOutlineClose />
+                  </button>
+                </>
+              )}
+            </div>
           </div>
         </div>
       )}

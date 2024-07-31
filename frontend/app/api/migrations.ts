@@ -18,8 +18,7 @@ const migrate = () => {
         language TEXT NOT NULL,
         duration TEXT NOT NULL,
         background TEXT NOT NULL,
-        createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updatedAt TIMESTAMP
+        createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
       `,
       (err: Error) => {
@@ -27,24 +26,6 @@ const migrate = () => {
           console.error(err.message)
         } else {
           console.log('movies table schema created successfully.')
-        }
-      }
-    )
-
-    // Create a trigger to automatically update the updatedAt field
-    db.run(
-      `
-      CREATE TRIGGER IF NOT EXISTS update_movies_updated_at
-      AFTER UPDATE ON movies
-      BEGIN
-        UPDATE movies SET updatedAt = CURRENT_TIMESTAMP WHERE ROWID IS UPDATED;
-      END;
-    `,
-      (err: Error) => {
-        if (err) {
-          console.error(err.message)
-        } else {
-          console.log('Trigger to update updatedAt field created successfully.')
         }
       }
     )

@@ -6,8 +6,17 @@ import { toast } from 'react-toastify'
 import Uploader from '@/app/components/shared/Uploader'
 import Uploaded from '@/app/components/shared/Uploaded'
 
+interface FilesState {
+  image: string | File
+  video: string | File
+}
+
 export default function Page() {
   const { address, isConnecting, isDisconnected } = useAccount()
+  const [files, setFiles] = useState<FilesState>({
+    image: '',
+    video: '',
+  })
   const [movieDetails, setMovieDetails] = useState({
     name: '',
     image: '',
@@ -19,6 +28,15 @@ export default function Page() {
     rating: '',
     language: '',
   })
+
+  const handleSelectedFile = (name: string, value: string) => {
+    console.log(name, value)
+
+    setFiles((prevDetails) => ({
+      ...prevDetails,
+      [name]: value,
+    }))
+  }
 
   const isAllFieldsFilled = () =>
     Object.values(movieDetails).every((value) => value.trim() !== '')
@@ -75,10 +93,6 @@ export default function Page() {
     })
   }
 
-  const handleRemove = () => {
-    console.log('Clicked')
-  }
-
   return (
     <div className="flex flex-col items-center">
       <div className="bg-gray-800 bg-opacity-75 border border-slate-500 w-full md:w-2/5 p-4 rounded-xl text-slate-200">
@@ -92,11 +106,12 @@ export default function Page() {
                 onUploadSuccess={(response) =>
                   handleURLMount('videoUrl', response.url)
                 }
+                onFileSelected={(file) => handleSelectedFile('video', file)}
               />
             ) : (
               <Uploaded
                 name="Video"
-                url={movieDetails.videoUrl}
+                file={files.video}
                 onRemove={() => handleURLMount('videoUrl', '')}
               />
             )}
@@ -109,11 +124,12 @@ export default function Page() {
                 onUploadSuccess={(response) =>
                   handleURLMount('image', response.url)
                 }
+                onFileSelected={(file) => handleSelectedFile('image', file)}
               />
             ) : (
               <Uploaded
                 name="Poster"
-                url={movieDetails.image}
+                file={files.image}
                 onRemove={() => handleURLMount('image', '')}
               />
             )}
