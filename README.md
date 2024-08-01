@@ -3,13 +3,14 @@
 ![Header and Banner Component](./screenshots/1.png)
 ![Poster Component](./screenshots/2.png)
 
-
 ## Overview
 
 VidTv is a web app that uses the Sia Decentralized Storage Blockchain to stream and manage all its media files.
 
 ## Prerequisites
+
 The Renterd service comprises of the following technologies:
+
 - Sia Renterd
 - Docker
 
@@ -38,8 +39,20 @@ Follow [this tutorial get your Rentered ready](/) to start managing your files o
 ![Renterd Files Service](./screenshots/0.png)
 
 #### Backend Setup
+
 Follow the instructions here to [setup your backend](/backend/) which is built with Express and TypeScript.
 
 #### Frontend Setup
+
 Follow the instructions here to [setup your frontend](/frontend/) which is built with NextJs 14 and TypeScript.
 
+Questions about running the demo? [Open an issue](https://github.com/Daltonic/sia_vid_tv/issues). We're here to help ✌️ Access the [Teaching Guide Here](/).
+
+#### Useful links
+
+- 🏠 [Sia Website](https://sia.tech)
+- 🔥 [Sia Renterd](https://sia.tech/software/renterd)
+- 👨‍💻 [Sia Renterd API](https://api.sia.tech/renterd)
+- 🚀 [Sia Discord Channel](https://sia.tech/discord)
+- 💡 [Our Website](https://dappmentors.org/)
+- 💪 [YouTube Channel](https://youtube.com/@dappmentors)

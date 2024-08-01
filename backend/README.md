@@ -41,3 +41,14 @@ Follow [this tutorial get your Rentered ready](../) to start managing your files
 
 #### Frontend Setup
 Follow the instructions here to [setup your frontend](/frontend/) which is built with NextJs 14 and TypeScript.
+
+Questions about running the demo? [Open an issue](https://github.com/Daltonic/sia_vid_tv/issues). We're here to help ✌️ Access the [Teaching Guide Here](/).
+
+#### Useful links
+
+- 🏠 [Sia Website](https://sia.tech)
+- 🔥 [Sia Renterd](https://sia.tech/software/renterd)
+- 👨‍💻 [Sia Renterd API](https://api.sia.tech/renterd)
+- 🚀 [Sia Discord Channel](https://sia.tech/discord)
+- 💡 [Our Website](https://dappmentors.org/)
+- 💪 [YouTube Channel](https://youtube.com/@dappmentors)
