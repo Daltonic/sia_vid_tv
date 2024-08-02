@@ -21,6 +21,7 @@ Run the command below to start your frontend application.
 ```sh
 $ cd frontend
 $ npm install
+$ npm run migrate
 ```
 
 **2. Add Environment Variables:**
