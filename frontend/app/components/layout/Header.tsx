@@ -1,6 +1,6 @@
 import React from 'react'
 import { SiGoogledisplayandvideo360 } from 'react-icons/si'
-import Menue from '../shared/Menu'
+import Menu from '../shared/Menu'
 import Link from 'next/link'
 
 const Header = () => {
@@ -22,9 +22,11 @@ const Header = () => {
             <li>Anime</li>
             <Link href="/account">Account</Link>
           </ul>
-          <Menue />
+          <Menu />
           <div className="hidden md:block">
-            <w3m-button label="Login" balance="hide" />
+            <button className="bg-green-500 text-white rounded-full p-1 min-w-28 text-md hidden md:block">
+              Login
+            </button>
           </div>
         </div>
       </div>

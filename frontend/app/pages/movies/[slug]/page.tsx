@@ -16,7 +16,6 @@ const Page = () => {
   const [loaded, setLoaded] = useState(false)
   const [movie, setMovie] = useState<PosterInterface | null>(null)
   const [movies, setMovies] = useState<PosterInterface[]>([])
-  const { address, isConnecting, isDisconnected } = useAccount()
 
   useEffect(() => {
     const fetchMovieData = async () => {
@@ -29,7 +28,7 @@ const Page = () => {
     }
 
     fetchMovieData()
-  }, [slug, address, isDisconnected])
+  }, [slug])
 
   const handleSubmit = async () => {
     if (!window.confirm('Are you sure you want to delete this movie?')) return
@@ -81,7 +80,7 @@ const Page = () => {
                   {movie?.rating} {movie?.duration}, {movie?.genre}
                   {' | ' + truncateAddress(movie?.userId || '')}
                 </p>
-                {!isDisconnected && address && movie?.userId === address && (
+                {movie && (
                   <div className="flex space-x-4">
                     <span className="w-1"></span>
                     <Link

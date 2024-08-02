@@ -3,7 +3,7 @@ import Link from 'next/link'
 import React, { useState } from 'react'
 import { AiOutlineMenu, AiOutlineClose } from 'react-icons/ai'
 
-const Menue = () => {
+const Menu = () => {
   const [isOpen, setIsOpen] = useState(false)
 
   const toggleMenu = () => {
@@ -36,10 +36,12 @@ const Menue = () => {
         <p>Series</p>
         <p>Anime</p>
         <Link href="/account">Account</Link>
-        <w3m-button label="Login" balance="hide" />
+        <button className="bg-green-500 text-white rounded-full p-1 min-w-28 text-md hidden md:block">
+          Login
+        </button>
       </div>
     </div>
   )
 }
 
-export default Menue
+export default Menu

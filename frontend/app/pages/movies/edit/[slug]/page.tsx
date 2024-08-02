@@ -1,6 +1,5 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { useAccount } from 'wagmi'
 import { toast } from 'react-toastify'
 import { useParams } from 'next/navigation'
 import { PosterInterface } from '@/utils/interfaces'
@@ -16,7 +15,6 @@ interface FilesState {
 
 export default function Page() {
   const { slug } = useParams()
-  const { address, isConnecting, isDisconnected } = useAccount()
   const [movie, setMovie] = useState<PosterInterface | null>(null)
   const [files, setFiles] = useState<FilesState>({
     image: '',
@@ -47,7 +45,7 @@ export default function Page() {
     }
 
     fetchMovieData()
-  }, [slug, address, isDisconnected])
+  }, [slug])
 
   const handleSelectedFile = (name: string, value: string) => {
     setFiles((prevDetails) => ({
@@ -248,7 +246,7 @@ export default function Page() {
               </small>
             </div>
 
-            {movie && movie.userId === address && !isDisconnected && (
+            {movie && (
               <button
                 className="w-full bg-green-500 text-white py-2.5 rounded-lg hover:bg-transparent
               hover:border-green-800 border border-transparent hover:text-green-500"

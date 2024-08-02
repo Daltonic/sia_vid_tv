@@ -1,6 +1,5 @@
 'use client'
 import { useState } from 'react'
-import { useAccount } from 'wagmi'
 import { toast } from 'react-toastify'
 import Uploader from '@/app/components/shared/Uploader'
 import Uploaded from '@/app/components/shared/Uploaded'
@@ -11,7 +10,6 @@ interface FilesState {
 }
 
 export default function Page() {
-  const { address, isConnecting, isDisconnected } = useAccount()
   const [files, setFiles] = useState<FilesState>({
     image: '',
     video: '',
@@ -242,7 +240,7 @@ export default function Page() {
               </small>
             </div>
 
-            {!isDisconnected && address && isAllFieldsFilled() && (
+            {isAllFieldsFilled() && (
               <button
                 className="w-full bg-green-500 text-white py-2.5 rounded-lg hover:bg-transparent
               hover:border-green-800 border border-transparent hover:text-green-500"

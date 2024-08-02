@@ -3,37 +3,33 @@ import MovieCard from '@/app/components/shared/MovieCard'
 import { useEffect, useState } from 'react'
 import { PosterInterface } from '@/utils/interfaces'
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
-import { useAccount } from 'wagmi'
 import { posters } from '@/app/data/posters'
 
 const Page = () => {
   const [loaded, setLoaded] = useState(false)
   const [movies, setMovies] = useState<PosterInterface[]>([])
-  const { address, isConnecting, isDisconnected } = useAccount()
 
   useEffect(() => {
     const fetchMovieData = async () => {
-      if (address) {
-        const moviesData = posters.slice(0, 3)
-        setMovies(moviesData)
-      }
+      const moviesData = posters.slice(0, 3)
+      setMovies(moviesData)
       setLoaded(true)
     }
 
     fetchMovieData()
-  }, [address, isConnecting])
+  }, [])
 
   return (
     <div className="flex flex-col w-full items-center">
       <h3 className="text-lg mb-4">
-        {!loaded || !address
+        {!loaded
           ? 'Please connect your account to view your movies.'
           : movies.length < 1
           ? 'You have no movies posted yet...'
           : 'Your Movies'}
       </h3>
 
-      {loaded && address && (
+      {loaded && (
         <ul className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-5 h-full item-center ">
           {movies.map((movie) => (
             <MovieCard
@@ -46,7 +42,7 @@ const Page = () => {
         </ul>
       )}
 
-      {!loaded && address && (
+      {!loaded && (
         <SkeletonTheme
           baseColor="#202020"
           highlightColor="#444"
