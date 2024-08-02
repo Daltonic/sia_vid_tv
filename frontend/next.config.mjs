@@ -3,10 +3,6 @@ const nextConfig = {
   rewrites: async () => {
     return [
       {
-        source: '/api/:path*',
-        destination: '/api/:path*',
-      },
-      {
         source: '/:path*',
         destination: '/pages/:path*',
       },
@@ -19,7 +15,7 @@ const nextConfig = {
         hostname: '**',
       },
     ],
-    domains: ['localhost']
+    domains: ['localhost'],
   },
 }
 

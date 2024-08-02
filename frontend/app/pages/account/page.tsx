@@ -2,9 +2,9 @@
 import MovieCard from '@/app/components/shared/MovieCard'
 import { useEffect, useState } from 'react'
 import { PosterInterface } from '@/utils/interfaces'
-import { fetchMovies } from '@/app/services/api.service'
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
 import { useAccount } from 'wagmi'
+import { posters } from '@/app/data/posters'
 
 const Page = () => {
   const [loaded, setLoaded] = useState(false)
@@ -14,7 +14,7 @@ const Page = () => {
   useEffect(() => {
     const fetchMovieData = async () => {
       if (address) {
-        const moviesData = await fetchMovies(null, address)
+        const moviesData = posters.slice(0, 3)
         setMovies(moviesData)
       }
       setLoaded(true)

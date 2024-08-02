@@ -1,5 +1,4 @@
 /* eslint-disable @next/next/no-img-element */
-import { uploadFile } from '@/app/services/api.service'
 import React, { useState } from 'react'
 import { AiOutlineClose } from 'react-icons/ai'
 import { FaCloudUploadAlt } from 'react-icons/fa'
@@ -127,13 +126,9 @@ const Uploader: React.FC<ComponentProps> = ({
 
     await toast.promise(
       new Promise<void>(async (resolve, reject) => {
-        await uploadFile(files[0], handleUploadProgress)
-          .then((response) => {
-            onUploadSuccess(response)
-            console.log(response)
-            resolve(response)
-          })
-          .catch((error) => reject(error))
+        onUploadSuccess('')
+        console.log('Uploaded')
+        resolve()
       }),
       {
         pending: 'Uploading...',

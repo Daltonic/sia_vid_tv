@@ -1,13 +1,13 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { useAccount } from 'wagmi'
-import { fetchMovie, updateMovie } from '@/app/services/api.service'
 import { toast } from 'react-toastify'
 import { useParams } from 'next/navigation'
 import { PosterInterface } from '@/utils/interfaces'
 import Link from 'next/link'
 import Uploader from '@/app/components/shared/Uploader'
 import Uploaded from '@/app/components/shared/Uploaded'
+import { posters } from '@/app/data/posters'
 
 interface FilesState {
   image: string | File
@@ -36,9 +36,12 @@ export default function Page() {
 
   useEffect(() => {
     const fetchMovieData = async () => {
-      const movieData = await fetchMovie(slug as string)
+      const movieData = posters.find((movie) => movie.slug === slug)
+      if (!movieData) return
+
       setMovieDetails(movieData as any)
-      setMovie(movieData)
+      setMovie(movieData as PosterInterface)
+
       handleSelectedFile('image', movieData.image as string)
       handleSelectedFile('videoUrl', movieData.videoUrl as string)
     }
@@ -78,11 +81,7 @@ export default function Page() {
 
     await toast.promise(
       new Promise<void>(async (resolve, reject) => {
-        updateMovie({ ...movie, ...movieDetails } as PosterInterface)
-          .then((res) => {
-            resolve(res)
-          })
-          .catch((error) => reject(error))
+        resolve()
       }),
       {
         pending: 'Updating...',

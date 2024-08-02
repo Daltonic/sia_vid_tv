@@ -5,15 +5,11 @@ import { useParams } from 'next/navigation'
 import ReactPlayer from 'react-player'
 import { useEffect, useState } from 'react'
 import { PosterInterface } from '@/utils/interfaces'
-import {
-  deleteMovie,
-  fetchMovie,
-  fetchMovies,
-} from '@/app/services/api.service'
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
 import Link from 'next/link'
 import { useAccount } from 'wagmi'
 import { toast } from 'react-toastify'
+import { posters } from '@/app/data/posters'
 
 const Page = () => {
   const { slug } = useParams()
@@ -24,10 +20,10 @@ const Page = () => {
 
   useEffect(() => {
     const fetchMovieData = async () => {
-      const movieData = await fetchMovie(slug as string)
-      setMovie(movieData)
+      const movieData = posters.find((movie) => movie.slug === slug)
+      setMovie(movieData as PosterInterface)
 
-      const moviesData = await fetchMovies(3)
+      const moviesData = posters.slice(0, 3)
       setMovies(moviesData)
       setLoaded(true)
     }
@@ -40,12 +36,8 @@ const Page = () => {
 
     await toast.promise(
       new Promise<void>(async (resolve, reject) => {
-        deleteMovie(movie as PosterInterface)
-          .then((res) => {
-            window.location.href = '/account'
-            resolve(res)
-          })
-          .catch((error) => reject(error))
+        window.location.href = '/account'
+        resolve()
       }),
       {
         pending: 'Deleting...',
@@ -91,7 +83,7 @@ const Page = () => {
                 </p>
                 {!isDisconnected && address && movie?.userId === address && (
                   <div className="flex space-x-4">
-                    <span className='w-1'></span>
+                    <span className="w-1"></span>
                     <Link
                       href={'/movies/edit/' + movie?.slug}
                       className="flex justify-start items-center space-x-1 text-green-500"

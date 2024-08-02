@@ -1,7 +1,6 @@
 'use client'
 import { useState } from 'react'
 import { useAccount } from 'wagmi'
-import { createMovie } from '@/app/services/api.service'
 import { toast } from 'react-toastify'
 import Uploader from '@/app/components/shared/Uploader'
 import Uploaded from '@/app/components/shared/Uploaded'
@@ -49,12 +48,8 @@ export default function Page() {
 
     await toast.promise(
       new Promise<void>(async (resolve, reject) => {
-        createMovie({ ...movieDetails, userId: address })
-          .then((res) => {
-            resetForm()
-            resolve(res)
-          })
-          .catch((error) => reject(error))
+        resetForm()
+        resolve()
       }),
       {
         pending: 'Publishing...',
