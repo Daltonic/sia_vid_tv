@@ -24,9 +24,7 @@ const Header = () => {
           </ul>
           <Menu />
           <div className="hidden md:block">
-            <button className="bg-green-500 text-white rounded-full p-1 min-w-28 text-md hidden md:block">
-              Login
-            </button>
+            <w3m-button label="Login" balance="hide" />
           </div>
         </div>
       </div>

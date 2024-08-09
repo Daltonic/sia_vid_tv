@@ -9,34 +9,43 @@ import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
 import Link from 'next/link'
 import { useAccount } from 'wagmi'
 import { toast } from 'react-toastify'
-import { posters } from '@/app/data/posters'
+import {
+  deleteMovie,
+  fetchMovie,
+  fetchMovies,
+} from '@/app/services/api.service'
 
 const Page = () => {
   const { slug } = useParams()
+  const { address, isDisconnected, isConnecting } = useAccount()
   const [loaded, setLoaded] = useState(false)
   const [movie, setMovie] = useState<PosterInterface | null>(null)
   const [movies, setMovies] = useState<PosterInterface[]>([])
 
   useEffect(() => {
     const fetchMovieData = async () => {
-      const movieData = posters.find((movie) => movie.slug === slug)
+      const movieData = await fetchMovie(slug as string)
       setMovie(movieData as PosterInterface)
 
-      const moviesData = posters.slice(0, 3)
+      const moviesData = await fetchMovies(3)
       setMovies(moviesData)
       setLoaded(true)
     }
 
     fetchMovieData()
-  }, [slug])
+  }, [slug, address, isDisconnected])
 
   const handleSubmit = async () => {
     if (!window.confirm('Are you sure you want to delete this movie?')) return
 
     await toast.promise(
       new Promise<void>(async (resolve, reject) => {
-        window.location.href = '/account'
-        resolve()
+        deleteMovie(movie as PosterInterface)
+          .then((res) => {
+            window.location.href = '/account'
+            resolve(res)
+          })
+          .catch((error) => reject(error))
       }),
       {
         pending: 'Deleting...',
@@ -80,7 +89,7 @@ const Page = () => {
                   {movie?.rating} {movie?.duration}, {movie?.genre}
                   {' | ' + truncateAddress(movie?.userId || '')}
                 </p>
-                {movie && (
+                {!isDisconnected && address && movie?.userId === address && (
                   <div className="flex space-x-4">
                     <span className="w-1"></span>
                     <Link

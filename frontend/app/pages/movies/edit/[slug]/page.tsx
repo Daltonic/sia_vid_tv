@@ -7,6 +7,8 @@ import Link from 'next/link'
 import Uploader from '@/app/components/shared/Uploader'
 import Uploaded from '@/app/components/shared/Uploaded'
 import { posters } from '@/app/data/posters'
+import { fetchMovie, updateMovie } from '@/app/services/api.service'
+import { useAccount } from 'wagmi'
 
 interface FilesState {
   image: string | File
@@ -15,6 +17,7 @@ interface FilesState {
 
 export default function Page() {
   const { slug } = useParams()
+  const { address, isDisconnected, isConnecting } = useAccount()
   const [movie, setMovie] = useState<PosterInterface | null>(null)
   const [files, setFiles] = useState<FilesState>({
     image: '',
@@ -34,7 +37,7 @@ export default function Page() {
 
   useEffect(() => {
     const fetchMovieData = async () => {
-      const movieData = posters.find((movie) => movie.slug === slug)
+      const movieData = await fetchMovie(slug as string)
       if (!movieData) return
 
       setMovieDetails(movieData as any)
@@ -45,7 +48,7 @@ export default function Page() {
     }
 
     fetchMovieData()
-  }, [slug])
+  }, [slug, address, isDisconnected])
 
   const handleSelectedFile = (name: string, value: string) => {
     setFiles((prevDetails) => ({
@@ -79,7 +82,9 @@ export default function Page() {
 
     await toast.promise(
       new Promise<void>(async (resolve, reject) => {
-        resolve()
+        updateMovie({ ...movie, ...movieDetails } as PosterInterface)
+          .then((res) => resolve(res))
+          .catch((error) => reject(error))
       }),
       {
         pending: 'Updating...',
@@ -246,7 +251,7 @@ export default function Page() {
               </small>
             </div>
 
-            {movie && (
+            {movie && movie.userId === address && !isDisconnected && (
               <button
                 className="w-full bg-green-500 text-white py-2.5 rounded-lg hover:bg-transparent
               hover:border-green-800 border border-transparent hover:text-green-500"

@@ -5,7 +5,7 @@ import Posters from '@/app/components/home/Posters'
 import Subscriptions from '@/app/components/home/Subscriptions'
 import { PosterInterface } from '@/utils/interfaces'
 import PostersUI from './components/home/PostersUI'
-import { posters } from './data/posters'
+import { fetchMovies } from './services/api.service'
 
 const Page = () => {
   const [movies, setMovies] = useState<PosterInterface[]>([])
@@ -13,7 +13,7 @@ const Page = () => {
 
   useEffect(() => {
     const fetchMoviesData = async () => {
-      const moviesData = posters
+      const moviesData = await fetchMovies()
       setMovies(moviesData)
       setLoaded(true)
     }

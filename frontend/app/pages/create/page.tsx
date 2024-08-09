@@ -3,6 +3,8 @@ import { useState } from 'react'
 import { toast } from 'react-toastify'
 import Uploader from '@/app/components/shared/Uploader'
 import Uploaded from '@/app/components/shared/Uploaded'
+import { createMovie } from '@/app/services/api.service'
+import { useAccount } from 'wagmi'
 
 interface FilesState {
   image: string | File
@@ -10,6 +12,7 @@ interface FilesState {
 }
 
 export default function Page() {
+  const { address, isDisconnected } = useAccount()
   const [files, setFiles] = useState<FilesState>({
     image: '',
     video: '',
@@ -46,8 +49,12 @@ export default function Page() {
 
     await toast.promise(
       new Promise<void>(async (resolve, reject) => {
-        resetForm()
-        resolve()
+        createMovie({ ...movieDetails, userId: address })
+          .then((res) => {
+            resetForm()
+            resolve(res)
+          })
+          .catch((error) => reject(error))
       }),
       {
         pending: 'Publishing...',
@@ -240,7 +247,7 @@ export default function Page() {
               </small>
             </div>
 
-            {isAllFieldsFilled() && (
+            {!isDisconnected && address && isAllFieldsFilled() && (
               <button
                 className="w-full bg-green-500 text-white py-2.5 rounded-lg hover:bg-transparent
               hover:border-green-800 border border-transparent hover:text-green-500"

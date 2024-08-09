@@ -3,21 +3,23 @@ import MovieCard from '@/app/components/shared/MovieCard'
 import { useEffect, useState } from 'react'
 import { PosterInterface } from '@/utils/interfaces'
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
-import { posters } from '@/app/data/posters'
+import { fetchMovies } from '@/app/services/api.service'
+import { useAccount } from 'wagmi'
 
 const Page = () => {
   const [loaded, setLoaded] = useState(false)
   const [movies, setMovies] = useState<PosterInterface[]>([])
+  const { address, isConnecting, isDisconnected } = useAccount()
 
   useEffect(() => {
     const fetchMovieData = async () => {
-      const moviesData = posters.slice(0, 3)
+      const moviesData = await fetchMovies(null, address)
       setMovies(moviesData)
       setLoaded(true)
     }
 
     fetchMovieData()
-  }, [])
+  }, [address, isConnecting])
 
   return (
     <div className="flex flex-col w-full items-center">
