@@ -43,7 +43,7 @@ Follow [this tutorial get your Rentered ready](../) to start managing your files
 
 Follow the instructions here to [setup your backend](/backend/) which is built with Express and TypeScript.
 
-Questions about running the demo? [Open an issue](https://github.com/Daltonic/sia_vid_tv/issues). We're here to help ✌️ Access the [Teaching Guide Here](/).
+Questions about running the demo? [Open an issue](https://github.com/Daltonic/sia_vid_tv/issues). We're here to help, [Learn how we built this dApp here on YouTube](https://www.youtube.com/playlist?list=PLUDcVqFK2t-CZJZ5ihfrVHtLkDhZlLYO-).
 
 #### Useful links
 
